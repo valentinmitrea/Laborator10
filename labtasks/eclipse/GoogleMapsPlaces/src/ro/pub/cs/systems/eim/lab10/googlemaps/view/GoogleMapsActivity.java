@@ -11,8 +11,10 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -28,7 +30,9 @@ import android.widget.Toast;
 import ro.pub.cs.systems.eim.lab10.R;
 import ro.pub.cs.systems.eim.lab10.googlemaps.controller.PlacesAdapter;
 import ro.pub.cs.systems.eim.lab10.googlemaps.general.Constants;
+import ro.pub.cs.systems.eim.lab10.googlemaps.general.Utilities;
 import ro.pub.cs.systems.eim.lab10.googlemaps.model.Place;
+
 
 public class GoogleMapsActivity extends Activity implements ConnectionCallbacks, OnConnectionFailedListener {
 
@@ -56,15 +60,35 @@ public class GoogleMapsActivity extends Activity implements ConnectionCallbacks,
 
 		@Override
 		public void onClick(View view) {
-			// TODO exercise 6a
 			// check whether latitude, longitude and name are filled, otherwise
-			// long an error
+			// log an error
 			// navigate to the requested position (latitude, longitude)
 			// create a MarkerOptions object with position, title and icon taken
 			// from the corresponding widgets
 			// add the MarkerOptions to the Google Map
 			// add the Place information to the places list
 			// notify the placesAdapter that the data set was changed
+			String latitude = latitudeEditText.getText().toString();
+			String longitude = longitudeEditText.getText().toString();
+			String name = nameEditText.getText().toString();
+			
+			if (latitude == null || latitude.isEmpty() || longitude == null || longitude.isEmpty() || name == null || name.isEmpty()) {
+				Toast.makeText(GoogleMapsActivity.this, "GPS coordinates / name should be filled!", Toast.LENGTH_SHORT).show();
+				return;
+			}
+			
+			double latitudeValue = Double.parseDouble(latitude);
+			double longitudeValue = Double.parseDouble(longitude);
+			navigateToLocation(latitudeValue, longitudeValue);
+			
+			MarkerOptions marker = new MarkerOptions()
+				.position(new LatLng(latitudeValue, longitudeValue))
+				.title(name);
+			marker.icon(BitmapDescriptorFactory.defaultMarker(Utilities.getDefaultMarker(markerTypeSpinner.getSelectedItemPosition())));
+			googleMap.addMarker(marker);
+			
+			places.add(new Place(latitudeValue, longitudeValue, name, Utilities.getDefaultMarker(markerTypeSpinner.getSelectedItemPosition())));
+			placesAdapter.notifyDataSetChanged();
 		}
 	}
 
@@ -74,12 +98,19 @@ public class GoogleMapsActivity extends Activity implements ConnectionCallbacks,
 
 		@Override
 		public void onClick(View view) {
-			// TODO exercise 6b
 			// check whether there are markers on the Google Map, otherwise log
 			// an error
 			// clear the Google Map
 			// clear the places List
 			// notify the placesAdapter that the data set was changed
+			if (places == null || places.isEmpty()) {
+				Toast.makeText(GoogleMapsActivity.this, "There are no places available!", Toast.LENGTH_SHORT).show();
+				return;
+			}
+			
+			googleMap.clear();
+			places.clear();
+			placesAdapter.notifyDataSetChanged();
 		}
 	}
 
@@ -92,8 +123,7 @@ public class GoogleMapsActivity extends Activity implements ConnectionCallbacks,
 			String latitudeContent = latitudeEditText.getText().toString();
 			String longitudeContent = longitudeEditText.getText().toString();
 
-			if (latitudeContent == null || latitudeContent.isEmpty() || longitudeContent == null
-					|| longitudeContent.isEmpty()) {
+			if (latitudeContent == null || latitudeContent.isEmpty() || longitudeContent == null || longitudeContent.isEmpty()) {
 				Toast.makeText(GoogleMapsActivity.this, "GPS coordinates should be filled!", Toast.LENGTH_SHORT).show();
 				return;
 			}
@@ -125,6 +155,7 @@ public class GoogleMapsActivity extends Activity implements ConnectionCallbacks,
 
 	}
 
+
 	private void navigateToLocation(double latitude, double longitude) {
 		latitudeEditText.setText(String.valueOf(latitude));
 		longitudeEditText.setText(String.valueOf(longitude));
@@ -132,6 +163,7 @@ public class GoogleMapsActivity extends Activity implements ConnectionCallbacks,
 				.zoom(Constants.CAMERA_ZOOM).build();
 		googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 	}
+
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -164,6 +196,7 @@ public class GoogleMapsActivity extends Activity implements ConnectionCallbacks,
 				.addOnConnectionFailedListener(this).addApi(LocationServices.API).build();
 	}
 
+
 	@Override
 	protected void onStart() {
 		Log.i(Constants.TAG, "onStart() callback method was invoked");
@@ -180,15 +213,16 @@ public class GoogleMapsActivity extends Activity implements ConnectionCallbacks,
 		}
 	}
 
+
 	@Override
 	protected void onStop() {
 		Log.i(Constants.TAG, "onStop() callback method was invoked");
-		if (googleApiClient != null && googleApiClient.isConnected()) {
+		if (googleApiClient != null && googleApiClient.isConnected())
 			googleApiClient.disconnect();
-		}
 		super.onStop();
 	}
 
+	
 	@Override
 	protected void onDestroy() {
 		Log.i(Constants.TAG, "onDestroy() callback method was invoked");
@@ -196,10 +230,12 @@ public class GoogleMapsActivity extends Activity implements ConnectionCallbacks,
 		super.onDestroy();
 	}
 
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.google_maps, menu);
+		
 		return true;
 	}
 
@@ -209,24 +245,28 @@ public class GoogleMapsActivity extends Activity implements ConnectionCallbacks,
 		// automatically handle clicks on the Home/Up button, so long
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
-		if (id == R.id.action_settings) {
+		if (id == R.id.action_settings)
 			return true;
-		}
+		
 		return super.onOptionsItemSelected(item);
 	}
+
 
 	@Override
 	public void onConnected(Bundle connectionHint) {
 		Log.i(Constants.TAG, "onConnected() callback method has been invoked");
 	}
 
+
 	@Override
 	public void onConnectionSuspended(int cause) {
 		Log.i(Constants.TAG, "onConnectionSuspended() callback method has been invoked");
 	}
 
+
 	@Override
 	public void onConnectionFailed(ConnectionResult connectionResult) {
 		Log.i(Constants.TAG, "onConnectionFailed() callback method has been invoked");
 	}
+
 }

@@ -11,6 +11,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 import ro.pub.cs.systems.eim.lab10.googlemaps.model.Place;
 
+
 public class PlacesAdapter extends BaseAdapter {
 
 	private Context context;
@@ -27,28 +28,30 @@ public class PlacesAdapter extends BaseAdapter {
 		this.layoutInflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		this.data = data;
 	}
+	
 
 	@Override
 	public int getCount() {
 		return data.size();
 	}
+	
 
 	@Override
 	public Object getItem(int position) {
 		return data.get(position);
 	}
+	
 
 	@Override
 	public long getItemId(int position) {
 		return 0;
 	}
+	
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		View view;
-
 		PlaceViewHolder placeViewHolder;
-
 		Place place = (Place) getItem(position);
 
 		if (convertView == null) {
@@ -56,9 +59,9 @@ public class PlacesAdapter extends BaseAdapter {
 			placeViewHolder = new PlaceViewHolder();
 			placeViewHolder.placeInformationTextView = (TextView) view.findViewById(R.id.place_information_text_view);
 			view.setTag(placeViewHolder);
-		} else {
-			view = convertView;
 		}
+		else
+			view = convertView;
 
 		placeViewHolder = (PlaceViewHolder) view.getTag();
 		placeViewHolder.placeInformationTextView.setText(place.toString());

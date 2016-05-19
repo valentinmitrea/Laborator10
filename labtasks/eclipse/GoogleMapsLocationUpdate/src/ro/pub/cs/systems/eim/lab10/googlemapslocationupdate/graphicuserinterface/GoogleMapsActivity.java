@@ -29,8 +29,8 @@ import android.widget.Toast;
 import ro.pub.cs.systems.eim.lab10.R;
 import ro.pub.cs.systems.eim.lab10.googlemapslocationupdate.general.Constants;
 
-public class GoogleMapsActivity extends Activity
-		implements ConnectionCallbacks, OnConnectionFailedListener, LocationListener {
+
+public class GoogleMapsActivity extends Activity implements ConnectionCallbacks, OnConnectionFailedListener, LocationListener {
 
 	private GoogleMap googleMap = null;
 	private GoogleApiClient googleApiClient = null;
@@ -67,6 +67,7 @@ public class GoogleMapsActivity extends Activity
 			double longitudeValue = Double.parseDouble(longitudeContent);
 			navigateToLocation(latitudeValue, longitudeValue);
 		}
+		
 	}
 
 	private LocationUpdatesStatusButtonListener locationUpdatesStatusButtonListener = new LocationUpdatesStatusButtonListener();
@@ -76,13 +77,12 @@ public class GoogleMapsActivity extends Activity
 		@Override
 		public void onClick(View view) {
 			String content = locationUpdatesStatusButton.getText().toString();
-			if (content.equals(getResources().getString(R.string.start_location_updates))) {
+			if (content.equals(getResources().getString(R.string.start_location_updates)))
 				startLocationUpdates();
-			}
-			if (content.equals(getResources().getString(R.string.stop_location_updates))) {
+			if (content.equals(getResources().getString(R.string.stop_location_updates)))
 				stopLocationUpdates();
-			}
 		}
+		
 	}
 
 	private MapTypeSpinnerListener mapTypeSpinnerListener = new MapTypeSpinnerListener();
@@ -92,21 +92,21 @@ public class GoogleMapsActivity extends Activity
 		@Override
 		public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
 			switch (position) {
-			case Constants.NORMAL_MAP_TYPE:
-				googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-				break;
-			case Constants.SATELLITE_MAP_TYPE:
-				googleMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
-				break;
-			case Constants.TERRAIN_MAP_TYPE:
-				googleMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
-				break;
-			case Constants.HYBRID_MAP_TYPE:
-				googleMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
-				break;
-			default:
-				googleMap.setMapType(GoogleMap.MAP_TYPE_NONE);
-				break;
+				case Constants.NORMAL_MAP_TYPE:
+					googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+					break;
+				case Constants.SATELLITE_MAP_TYPE:
+					googleMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+					break;
+				case Constants.TERRAIN_MAP_TYPE:
+					googleMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
+					break;
+				case Constants.HYBRID_MAP_TYPE:
+					googleMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+					break;
+				default:
+					googleMap.setMapType(GoogleMap.MAP_TYPE_NONE);
+					break;
 			}
 		}
 
@@ -116,6 +116,7 @@ public class GoogleMapsActivity extends Activity
 
 	}
 
+
 	private void navigateToLocation(double latitude, double longitude) {
 		latitudeEditText.setText(String.valueOf(latitude));
 		longitudeEditText.setText(String.valueOf(longitude));
@@ -124,9 +125,11 @@ public class GoogleMapsActivity extends Activity
 		googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 	}
 
+
 	private void navigateToLocation(Location location) {
 		navigateToLocation(location.getLatitude(), location.getLongitude());
 	}
+
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -153,10 +156,10 @@ public class GoogleMapsActivity extends Activity
 		locationRequest.setFastestInterval(Constants.LOCATION_REQUEST_FASTEST_INTERVAL);
 		locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
-		if (savedInstanceState != null) {
+		if (savedInstanceState != null)
 			restoreValues(savedInstanceState);
-		}
 	}
+
 
 	@Override
 	protected void onStart() {
@@ -172,20 +175,20 @@ public class GoogleMapsActivity extends Activity
 						}
 					});
 		}
-		if (googleApiClient != null && googleApiClient.isConnected() && locationUpdatesStatus) {
+		if (googleApiClient != null && googleApiClient.isConnected() && locationUpdatesStatus)
 			startLocationUpdates();
-		}
 	}
+
 
 	@Override
 	protected void onStop() {
 		Log.i(Constants.TAG, "onStop() callback method was invoked");
 		stopLocationUpdates();
-		if (googleApiClient != null && googleApiClient.isConnected()) {
+		if (googleApiClient != null && googleApiClient.isConnected())
 			googleApiClient.disconnect();
-		}
 		super.onStop();
 	}
+
 
 	@Override
 	protected void onDestroy() {
@@ -194,6 +197,7 @@ public class GoogleMapsActivity extends Activity
 		super.onDestroy();
 	}
 
+
 	@Override
 	public void onSaveInstanceState(Bundle savedInstanceState) {
 		Log.i(Constants.TAG, "onSaveInstanceState() callback method was invoked");
@@ -201,10 +205,12 @@ public class GoogleMapsActivity extends Activity
 		super.onSaveInstanceState(savedInstanceState);
 	}
 
+
 	protected void saveValues(Bundle state) {
 		state.putBoolean(Constants.LOCATION_UPDATES_STATUS, locationUpdatesStatus);
 		state.putParcelable(Constants.LAST_LOCATION, lastLocation);
 	}
+
 
 	@Override
 	public void onRestoreInstanceState(Bundle savedInstanceState) {
@@ -213,14 +219,14 @@ public class GoogleMapsActivity extends Activity
 		restoreValues(savedInstanceState);
 	}
 
+
 	protected void restoreValues(Bundle state) {
-		if (state.keySet().contains(Constants.LAST_LOCATION)) {
+		if (state.keySet().contains(Constants.LAST_LOCATION))
 			lastLocation = state.getParcelable(Constants.LAST_LOCATION);
-		}
-		if (state.keySet().contains(Constants.LOCATION_UPDATES_STATUS)) {
+		if (state.keySet().contains(Constants.LOCATION_UPDATES_STATUS))
 			locationUpdatesStatus = state.getBoolean(Constants.LOCATION_UPDATES_STATUS);
-		}
 	}
+
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -229,55 +235,84 @@ public class GoogleMapsActivity extends Activity
 		return true;
 	}
 
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle action bar item clicks here. The action bar will
 		// automatically handle clicks on the Home/Up button, so long
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
-		if (id == R.id.action_settings) {
+		if (id == R.id.action_settings)
 			return true;
-		}
+		
 		return super.onOptionsItemSelected(item);
 	}
+
 
 	@Override
 	public void onConnected(Bundle connectionHint) {
 		Log.i(Constants.TAG, "onConnected() callback method has been invoked");
 		lastLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
-		if (locationUpdatesStatus) {
+		if (locationUpdatesStatus)
 			startLocationUpdates();
-		}
 	}
+
 
 	@Override
 	public void onConnectionSuspended(int cause) {
 		Log.i(Constants.TAG, "onConnectionSuspended() callback method has been invoked");
 	}
 
+
 	@Override
 	public void onConnectionFailed(ConnectionResult connectionResult) {
 		Log.i(Constants.TAG, "onConnectionFailed() callback method has been invoked");
 	}
 
+
 	protected void startLocationUpdates() {
-		// TODO exercise 7a
 		// invoke the requestLocationUpdates() method from FusedLocationProviderApi class
 		// enable the locationUpdatesStatus
 		// enable the current location on Google Map
 		// update the locationUpdatesStatusButton text & color
 		// navigate to current position (lastLocation)
 		// disable the latitudeEditText, longitudeEditText, navigateToLocationButton widgets
+		LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
+		locationUpdatesStatus = true;
+		googleMap.setMyLocationEnabled(true);
+		
+		locationUpdatesStatusButton.setText(getResources().getString(R.string.stop_location_updates));
+		locationUpdatesStatusButton.setBackground(getResources().getDrawable(R.color.green));
+		
+		if (lastLocation != null)
+			navigateToLocation(lastLocation);
+		
+		latitudeEditText.setEnabled(false);
+		longitudeEditText.setEnabled(false);
+		navigateToLocationButton.setEnabled(false);
 	}
 
+
 	protected void stopLocationUpdates() {
-		// TODO exercise 7b
 		// invoke the removeLocationUpdates() method from FusedLocationProviderApi class
 		// disable the locationUpdatesStatus
 		// disable the current location on Google Map
 		// update the locationUpdatesStatusButton text & color
 		// enable the latitudeEditText, longitudeEditText, navigateToLocationButton widgets	and reset their content
+		LocationServices.FusedLocationApi.removeLocationUpdates(googleApiClient, this);
+		locationUpdatesStatus = false;
+		googleMap.setMyLocationEnabled(false);
+		
+		locationUpdatesStatusButton.setText(getResources().getString(R.string.start_location_updates));
+		locationUpdatesStatusButton.setBackground(getResources().getDrawable(R.color.red));
+		
+		latitudeEditText.setEnabled(true);
+		longitudeEditText.setEnabled(true);
+		navigateToLocationButton.setEnabled(true);
+		latitudeEditText.setText(new String());
+		longitudeEditText.setText(new String());
 	}
+
 
 	@Override
 	public void onLocationChanged(Location location) {
@@ -285,4 +320,5 @@ public class GoogleMapsActivity extends Activity
 		lastLocation = location;
 		navigateToLocation(lastLocation);
 	}
+
 }

@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import ro.pub.cs.systems.eim.lab10.R;
 
+
 public class GoogleMapsGeofenceEventActivity extends Activity {
 
 	@Override

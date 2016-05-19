@@ -1,5 +1,6 @@
 package ro.pub.cs.systems.eim.lab10.googlemapsgeocoding.general;
 
+
 public interface Constants {
 
 	public static String TAG = "[GoogleMapsGeocoding]";

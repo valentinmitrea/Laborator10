@@ -38,6 +38,7 @@ import ro.pub.cs.systems.eim.lab10.googlemapsgeofencing.general.Constants;
 import ro.pub.cs.systems.eim.lab10.googlemapsgeofencing.general.Utilities;
 import ro.pub.cs.systems.eim.lab10.googlemapsgeofencing.service.GeofenceTrackerIntentService;
 
+
 public class GoogleMapsActivity extends Activity
 		implements ConnectionCallbacks, OnConnectionFailedListener, LocationListener, ResultCallback<Status> {
 
@@ -71,13 +72,13 @@ public class GoogleMapsActivity extends Activity
 			String longitude = longitudeEditText.getText().toString();
 			String radius = radiusEditText.getText().toString();
 
-			if (!geofenceStatus) {
+			if (!geofenceStatus)
 				addGeofence(latitude, longitude, radius);
-			} else {
+			else
 				removeGeofence();
-			}
 		}
 	}
+
 
 	private void addGeofence(String latitude, String longitude, String radius) {
 		if (googleApiClient == null || !googleApiClient.isConnected()) {
@@ -105,6 +106,7 @@ public class GoogleMapsActivity extends Activity
 				.setResultCallback(GoogleMapsActivity.this);
 	}
 
+
 	private void removeGeofence() {
 		if (googleApiClient == null || !googleApiClient.isConnected()) {
 			Toast.makeText(GoogleMapsActivity.this, "Google API Client is null or not connected!", Toast.LENGTH_SHORT)
@@ -119,6 +121,7 @@ public class GoogleMapsActivity extends Activity
 				.setResultCallback(GoogleMapsActivity.this);
 	}
 
+
 	private void navigateToLocation(double latitude, double longitude) {
 		currentLocationTextView
 				.setText("Latitude: " + latitude + System.getProperty("line.separator") + "Longitude: " + longitude);
@@ -127,9 +130,11 @@ public class GoogleMapsActivity extends Activity
 		googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 	}
 
+
 	private void navigateToLocation(Location location) {
 		navigateToLocation(location.getLatitude(), location.getLongitude());
 	}
+
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -159,6 +164,7 @@ public class GoogleMapsActivity extends Activity
 		geofenceTrackerPendingIntent = PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 	}
 
+
 	@Override
 	protected void onStart() {
 		super.onStart();
@@ -166,15 +172,14 @@ public class GoogleMapsActivity extends Activity
 		googleApiClient.connect();
 		if (googleMap == null) {
 			googleMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.google_map)).getMap();
-			if (googleMap == null) {
+			if (googleMap == null)
 				Toast.makeText(this, "Unable to instantiate Google Maps!", Toast.LENGTH_SHORT).show();
-			}
 		}
-		if (googleApiClient != null && googleApiClient.isConnected()) {
+		if (googleApiClient != null && googleApiClient.isConnected())
 			startLocationUpdates();
-		}
 		restoreValues();
 	}
+
 
 	@Override
 	protected void onStop() {
@@ -182,11 +187,11 @@ public class GoogleMapsActivity extends Activity
 		saveValues();
 		stopLocationUpdates();
 		removeGeofence();
-		if (googleApiClient != null && googleApiClient.isConnected()) {
+		if (googleApiClient != null && googleApiClient.isConnected())
 			googleApiClient.disconnect();
-		}
 		super.onStop();
 	}
+
 
 	@Override
 	protected void onDestroy() {
@@ -195,11 +200,13 @@ public class GoogleMapsActivity extends Activity
 		super.onDestroy();
 	}
 
+
 	protected void saveValues() {
 		Utilities.setInformationIntoSharedPreferences(this, lastLocation, geofenceStatus,
 				latitudeEditText.getText().toString(), longitudeEditText.getText().toString(),
 				radiusEditText.getText().toString());
 	}
+
 
 	protected void restoreValues() {
 		lastLocation = Utilities.getLastLocationFromSharedPreferences(this);
@@ -211,12 +218,15 @@ public class GoogleMapsActivity extends Activity
 		}
 	}
 
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.google_maps, menu);
+		
 		return true;
 	}
+
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
@@ -224,11 +234,12 @@ public class GoogleMapsActivity extends Activity
 		// automatically handle clicks on the Home/Up button, so long
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
-		if (id == R.id.action_settings) {
+		if (id == R.id.action_settings)
 			return true;
-		}
+		
 		return super.onOptionsItemSelected(item);
 	}
+
 
 	@Override
 	public void onConnected(Bundle connectionHint) {
@@ -242,15 +253,18 @@ public class GoogleMapsActivity extends Activity
 		}
 	}
 
+
 	@Override
 	public void onConnectionSuspended(int cause) {
 		Log.i(Constants.TAG, "onConnectionSuspended() callback method has been invoked");
 	}
 
+
 	@Override
 	public void onConnectionFailed(ConnectionResult connectionResult) {
 		Log.i(Constants.TAG, "onConnectionFailed() callback method has been invoked");
 	}
+
 
 	protected void startLocationUpdates() {
 		LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
@@ -260,10 +274,12 @@ public class GoogleMapsActivity extends Activity
 		}
 	}
 
+
 	protected void stopLocationUpdates() {
 		LocationServices.FusedLocationApi.removeLocationUpdates(googleApiClient, this);
 		googleMap.setMyLocationEnabled(false);
 	}
+
 
 	@Override
 	public void onLocationChanged(Location location) {
@@ -271,6 +287,7 @@ public class GoogleMapsActivity extends Activity
 		lastLocation = location;
 		navigateToLocation(lastLocation);
 	}
+
 
 	@Override
 	public void onResult(Status status) {
@@ -280,28 +297,31 @@ public class GoogleMapsActivity extends Activity
 			if (geofenceStatus) {
 				geofenceStatusButton.setText(getResources().getString(R.string.remove_from_geofence));
 				geofenceStatusButton.setBackground(getResources().getDrawable(R.color.green));
-			} else {
+			}
+			else {
 				geofenceStatusButton.setText(getResources().getString(R.string.add_to_geofence));
 				geofenceStatusButton.setBackground(getResources().getDrawable(R.color.red));
 			}
-		} else {
+		}
+		else {
 			String errorMessage = null;
 			switch (status.getStatusCode()) {
-			case GeofenceStatusCodes.GEOFENCE_NOT_AVAILABLE:
-				errorMessage = Constants.GEOFENCE_NOT_AVAILABLE_ERROR;
-				break;
-			case GeofenceStatusCodes.GEOFENCE_TOO_MANY_GEOFENCES:
-				errorMessage = Constants.GEOFENCE_TOO_MANY_GEOFENCES_ERROR;
-				break;
-			case GeofenceStatusCodes.GEOFENCE_TOO_MANY_PENDING_INTENTS:
-				errorMessage = Constants.GEOFENCE_TOO_MANY_PENDING_INTENTS_ERROR;
-				break;
-			default:
-				errorMessage = Constants.GEOFENCE_UNKNOWN_ERROR;
-				break;
+				case GeofenceStatusCodes.GEOFENCE_NOT_AVAILABLE:
+					errorMessage = Constants.GEOFENCE_NOT_AVAILABLE_ERROR;
+					break;
+				case GeofenceStatusCodes.GEOFENCE_TOO_MANY_GEOFENCES:
+					errorMessage = Constants.GEOFENCE_TOO_MANY_GEOFENCES_ERROR;
+					break;
+				case GeofenceStatusCodes.GEOFENCE_TOO_MANY_PENDING_INTENTS:
+					errorMessage = Constants.GEOFENCE_TOO_MANY_PENDING_INTENTS_ERROR;
+					break;
+				default:
+					errorMessage = Constants.GEOFENCE_UNKNOWN_ERROR;
+					break;
 			}
 			Log.e(Constants.TAG, "An exception has occurred while turning the geofencing on/off: "
 					+ status.getStatusCode() + " " + errorMessage);
 		}
 	}
+
 }

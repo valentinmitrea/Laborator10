@@ -12,33 +12,38 @@ import android.location.Location;
 import android.util.Log;
 import ro.pub.cs.systems.eim.lab10.googlemapsgeofencing.graphicuserinterface.GoogleMapsActivity;
 
+
 public class Utilities {
+
 	public static String generateGeofenceIdentifier(int length) {
 		StringBuffer result = new StringBuffer("");
 
 		Random random = new Random();
-		for (int k = 0; k < length; k++) {
+		for (int k = 0; k < length; k++)
 			result.append((char) (Constants.FIRST_LETTER + random.nextInt(Constants.ALPHABET_LENGTH)));
-		}
 		return result.toString();
 	}
+
 
 	public static int getApplicationVersion(Context context) {
 		try {
 			PackageInfo packageInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
 			return packageInfo.versionCode;
-		} catch (NameNotFoundException nameNotFoundException) {
-			Log.e(Constants.TAG, "An exception has occurred: " + nameNotFoundException.getMessage());
-			if (Constants.DEBUG) {
-				nameNotFoundException.printStackTrace();
-			}
 		}
+		catch (NameNotFoundException nameNotFoundException) {
+			Log.e(Constants.TAG, "An exception has occurred: " + nameNotFoundException.getMessage());
+			if (Constants.DEBUG)
+				nameNotFoundException.printStackTrace();
+		}
+		
 		return -1;
 	}
+
 
 	public static SharedPreferences getSharedPreferences(Context context) {
 		return context.getSharedPreferences(GoogleMapsActivity.class.getSimpleName(), Context.MODE_PRIVATE);
 	}
+
 
 	public static Location getLastLocationFromSharedPreferences(Context context) {
 		final SharedPreferences sharedPreferences = getSharedPreferences(context);
@@ -54,10 +59,13 @@ public class Utilities {
 			Log.i(Constants.TAG, Constants.APPLICATION_VERSION_ERROR_MESSAGE);
 			return null;
 		}
+		
 		Gson gson = new Gson();
 		Location location = gson.fromJson(lastLocation, Location.class);
+		
 		return location;
 	}
+
 
 	public static boolean getGeofenceStatusFromSharedPreferences(Context context) {
 		final SharedPreferences sharedPreferences = getSharedPreferences(context);
@@ -69,8 +77,10 @@ public class Utilities {
 			Log.i(Constants.TAG, Constants.APPLICATION_VERSION_ERROR_MESSAGE);
 			return false;
 		}
+		
 		return geofenceStatus;
 	}
+
 
 	public static String getGeofenceLatitudeFromSharedPreferences(Context context) {
 		final SharedPreferences sharedPreferences = getSharedPreferences(context);
@@ -86,8 +96,10 @@ public class Utilities {
 			Log.i(Constants.TAG, Constants.APPLICATION_VERSION_ERROR_MESSAGE);
 			return null;
 		}
+		
 		return geofenceLatitude;
 	}
+
 
 	public static String getGeofenceLongitudeFromSharedPreferences(Context context) {
 		final SharedPreferences sharedPreferences = getSharedPreferences(context);
@@ -103,8 +115,10 @@ public class Utilities {
 			Log.i(Constants.TAG, Constants.APPLICATION_VERSION_ERROR_MESSAGE);
 			return null;
 		}
+		
 		return geofenceLongitude;
 	}
+
 
 	public static String getGeofenceRadiusFromSharedPreferences(Context context) {
 		final SharedPreferences sharedPreferences = getSharedPreferences(context);
@@ -120,8 +134,10 @@ public class Utilities {
 			Log.i(Constants.TAG, Constants.APPLICATION_VERSION_ERROR_MESSAGE);
 			return null;
 		}
+		
 		return geofenceRadius;
 	}
+
 
 	public static void setInformationIntoSharedPreferences(Context context, Location location, boolean geofenceStatus,
 			String geofenceLatitude, String geofenceLongitude, String geofenceRadius) {
